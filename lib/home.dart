@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
         key: _formKey,
         child: Container(
           margin: EdgeInsets.only(top: 70.0, left: 40.0, right: 40.0),
-              child: Column(
+          child: Column(
             children: [
               Container(
                 child: FlutterLogo(
@@ -66,9 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.all(10),
                 child: TextFormField(
                   validator: (val) {
-                    return val.isEmpty
-                        ? 'Enter A username'
-                        : null;
+                    return val.isEmpty ? 'Enter A username' : null;
                   },
                   controller: userNameController,
                   decoration: InputDecoration(
@@ -92,8 +90,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: TextFormField(
                   controller: passwordController,
                   validator: (val) {
-                    return val.length < 6
-                        ? 'Enter A Password Longer Than 6 Charchters'
+                    return val.isEmpty
+                        ? 'Enter A Password'
                         : null;
                   },
                   obscureText: _obscureText,
@@ -134,12 +132,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0),
                       side: BorderSide(color: Color(0xff9E9E9E))),
-                  onPressed: () {},
+                  onPressed: () {
+                    print(userNameController.text + passwordController.text);
+                  },
                 ),
               ),
             ],
           ),
-
         ),
       ),
     );
