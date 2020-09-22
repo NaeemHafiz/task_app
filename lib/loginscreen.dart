@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MaterialApp(home: HomeScreen()));
+void main() => runApp(MaterialApp(home: LoginScreen()));
 
-class HomeScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   TextEditingController userNameController, passwordController;
   final _formKey = GlobalKey<FormState>();
 
@@ -90,9 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: TextFormField(
                   controller: passwordController,
                   validator: (val) {
-                    return val.isEmpty
-                        ? 'Enter A Password'
-                        : null;
+                    return val.isEmpty ? 'Enter A Password' : null;
                   },
                   obscureText: _obscureText,
                   onChanged: (val) {
