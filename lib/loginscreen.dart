@@ -10,7 +10,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController userNameController, passwordController;
+  TextEditingController emailController, passwordController;
   final _formKey = GlobalKey<FormState>();
 
   // Initially password is obscure
@@ -26,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    userNameController = TextEditingController();
+    emailController = TextEditingController();
     passwordController = TextEditingController();
   }
 
@@ -34,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    userNameController.dispose();
+    emailController.dispose();
     passwordController.dispose();
   }
 
@@ -68,9 +68,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 padding: EdgeInsets.all(10),
                 child: TextFormField(
                   validator: (val) {
-                    return val.isEmpty ? 'Enter A username' : null;
+                    return val.isEmpty ? 'Enter Email' : null;
                   },
-                  controller: userNameController,
+                  controller: emailController,
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: Colors.white,
@@ -83,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         const Radius.circular(30.0),
                       ),
                     ),
-                    labelText: 'User Name',
+                    labelText: 'Your Email',
                   ),
                 ),
               ),
