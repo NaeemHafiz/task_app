@@ -1,6 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:task_app/dashboard.dart';
+import 'package:task_app/models/basemodel.dart';
 
-import 'home.dart';
+import 'models/loginparams.dart';
+import 'network/api.dart';
 
 void main() => runApp(MaterialApp(home: LoginScreen()));
 
@@ -10,8 +15,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController emailController, passwordController;
+  TextEditingController userNameController, passwordController;
   final _formKey = GlobalKey<FormState>();
+  LoginParams loginParams;
 
   // Initially password is obscure
   bool _obscureText = false;
@@ -26,15 +32,16 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    emailController = TextEditingController();
+    userNameController = TextEditingController();
     passwordController = TextEditingController();
+    loginParams = LoginParams();
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    emailController.dispose();
+    userNameController.dispose();
     passwordController.dispose();
   }
 
@@ -44,106 +51,151 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.black,
       body: Form(
         key: _formKey,
-        child: Container(
-          margin: EdgeInsets.only(top: 70.0, left: 40.0, right: 40.0),
-          child: Column(
-            children: [
-              Container(
-                child: FlutterLogo(
-                  size: 70,
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 5.0),
-                child: Text(
-                  'DISCOUNT OFFERS SALE',
-                  style: TextStyle(
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 40.0),
-                padding: EdgeInsets.all(10),
-                child: TextFormField(
-                  validator: (val) {
-                    return val.isEmpty ? 'Enter Email' : null;
-                  },
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    prefixIcon: Icon(
-                      Icons.person,
-                      color: Colors.black,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(
-                        const Radius.circular(30.0),
-                      ),
-                    ),
-                    labelText: 'Your Email',
+        child: Center(
+          child: Container(
+            margin: EdgeInsets.only(top: 70.0),
+            child: Column(
+              children: [
+                Container(
+                  child: FlutterLogo(
+                    size: 70,
                   ),
                 ),
-              ),
-              Container(
-                padding: EdgeInsets.all(10),
-                child: TextFormField(
-                  controller: passwordController,
-                  validator: (val) {
-                    return val.isEmpty ? 'Enter A Password' : null;
-                  },
-                  obscureText: _obscureText,
-                  onChanged: (val) {
-                    setState(() {
-                      passwordController.text = val.trim();
-                    });
-                  },
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    prefixIcon: Icon(
-                      Icons.lock,
-                      color: Colors.black,
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscureText ? Icons.visibility : Icons.visibility_off,
-                      ),
-                      onPressed: _togglePasswordStatus,
-                      color: Colors.black,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(
-                        const Radius.circular(30.0),
-                      ),
-                    ),
-                    labelText: 'Password',
+                Container(
+                  margin: EdgeInsets.only(top: 5.0),
+                  child: Text(
+                    'DISCOUNT OFFERS SALE',
+                    style: TextStyle(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white),
                   ),
                 ),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 12.0),
-                width: 300,
-                height: 60,
-                child: RaisedButton(
-                  child: Text('Sign in'),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                      side: BorderSide(color: Color(0xff9E9E9E))),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                    );
-                  },
+                Flexible(
+                  flex: 2,
+                  child: Container(
+                    width: 410,
+                    height: 70,
+                    margin: EdgeInsets.only(top: 60.0),
+                    child: TextFormField(
+                      validator: (val) {
+                        return val.isEmpty ? 'Enter username' : null;
+                      },
+                      controller: userNameController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        prefixIcon: Icon(
+                          Icons.person,
+                          color: Colors.black,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: const BorderRadius.all(
+                            const Radius.circular(30.0),
+                          ),
+                        ),
+                        labelText: 'Username',
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ],
+                Flexible(
+                  flex: 1,
+                  child: Container(
+                    margin: EdgeInsets.only(top: 18.0),
+                    width: 410,
+                    height: 70,
+                    child: TextFormField(
+                      controller: passwordController,
+                      validator: (val) {
+                        if (val.isEmpty) {
+                          return 'Enter A Password';
+                        }
+                        if (val.length < 6) {
+                          return 'Password shuld be at least 6 characters';
+                        }
+                      },
+                      obscureText: _obscureText,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        prefixIcon: Icon(
+                          Icons.lock,
+                          color: Colors.black,
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureText
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                          ),
+                          onPressed: _togglePasswordStatus,
+                          color: Colors.black,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: const BorderRadius.all(
+                            const Radius.circular(30.0),
+                          ),
+                        ),
+                        labelText: 'Password',
+                      ),
+                    ),
+                  ),
+                ),
+                Flexible(
+                  flex: 1,
+                  child: Container(
+                    margin: EdgeInsets.only(top: 18.0),
+                    width: 410,
+                    height: 70,
+                    child: RaisedButton(
+                      child: Text(
+                        'Sign in',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                          side: BorderSide(color: Color(0xff9E9E9E))),
+                      onPressed: () {
+                        setState(() {
+                          _formKey.currentState.validate()
+                              ? userLogin()
+                              : Scaffold.of(context).showSnackBar(
+                                  SnackBar(content: Text('This is not valid')));
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  userLogin() async {
+    loginParams.username = userNameController.text;
+    loginParams.password = passwordController.text;
+    ApiClass apiClass = ApiClass(Dio());
+    await apiClass.login(loginParams).then((value) {
+      BaseModel baseModel = value;
+
+      if (baseModel.code == 200) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Dashboard()),
+        );
+      } else {
+        Fluttertoast.showToast(
+          msg: value.message,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+        );
+      }
+    });
   }
 }
