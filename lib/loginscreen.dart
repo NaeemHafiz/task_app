@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -175,27 +177,23 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  prefix0.Error err = prefix0.Error();
   userLogin() async {
     loginParams.username = userNameController.text;
     loginParams.password = passwordController.text;
     ApiClass apiClass = ApiClass(Dio());
     await apiClass.login(loginParams).then((value) {
       BaseModel baseModel = value;
-
       if (baseModel.code == 200) {
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => Dashboard()),
         );
-      } else {
-        Fluttertoast.showToast(
-          msg: value.message,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-        );
       }
+    }).catchError((error) {
+      //TODO: handle errors
+      err.message = jsonDecode(error.toString())["message"];
+      throw("some arbitrary error");
     });
   }
 }
