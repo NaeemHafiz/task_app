@@ -14,13 +14,13 @@ class HomeScreenState extends State<HomeScreen> {
   List data;
 
   Future<String> getData() async {
+    showAlertDialog(context);
     var response = await http.get(
         Uri.encodeFull("https://jsonplaceholder.typicode.com/posts"),
         headers: {"Accept": "application/json"});
 
     this.setState(() {
-//      Navigator.of(context).pop();
-      showAlertDialog(context);
+      Navigator.of(context).pop();
       data = json.decode(response.body);
     });
 
@@ -158,6 +158,7 @@ class HomeScreenState extends State<HomeScreen> {
       ),
     );
     showDialog(
+      useRootNavigator: true,
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
