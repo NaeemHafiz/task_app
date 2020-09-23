@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'home.dart';
+
 void main() => runApp(MaterialApp(home: LoginScreen()));
 
 class LoginScreen extends StatefulWidget {
@@ -131,7 +133,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       borderRadius: BorderRadius.circular(30.0),
                       side: BorderSide(color: Color(0xff9E9E9E))),
                   onPressed: () {
-                    print(userNameController.text + passwordController.text);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                    );
                   },
                 ),
               ),
