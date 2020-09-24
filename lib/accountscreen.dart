@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:task_app/loginscreen.dart';
+import 'package:task_app/utils/preferencutils.dart';
 
 class AccountScreen extends StatefulWidget {
   @override
@@ -11,7 +13,7 @@ class _AccountScreenState extends State<AccountScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.black,
         centerTitle: true,
         title: Text(
           "Profile",
@@ -20,7 +22,17 @@ class _AccountScreenState extends State<AccountScreen> {
         automaticallyImplyLeading: false,
       ),
       body: Center(
-        child: Text('Profile',style: TextStyle(color: Colors.white,fontSize: 30.0),),
+        child: RaisedButton(
+          child: Text('Logout'),
+          onPressed: () {
+            PreferencUtils.removeUserToken();
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LoginScreen(),
+                ));
+          },
+        ),
       ),
     );
   }

@@ -11,7 +11,7 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.black,
         centerTitle: true,
         title: Text(
           "Messages",
@@ -20,7 +20,10 @@ class _FavouriteScreenState extends State<FavouriteScreen> {
         automaticallyImplyLeading: false,
       ),
       body: Center(
-        child: Text('Messages',style: TextStyle(color: Colors.white,fontSize: 30.0),),
+        child: Text(
+          'Messages',
+          style: TextStyle(color: Colors.white, fontSize: 30.0),
+        ),
       ),
     );
   }

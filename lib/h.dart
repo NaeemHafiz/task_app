@@ -7,10 +7,6 @@ import 'package:http/http.dart' as http;
 
 import 'detailscreen.dart';
 
-void main() {
-  runApp(new MaterialApp(home: new HomeScreen()));
-}
-
 class HomeScreen extends StatefulWidget {
   @override
   HomeScreenState createState() => new HomeScreenState();
@@ -20,11 +16,13 @@ class HomeScreenState extends State<HomeScreen> {
   List data;
 
   Future<String> getData() async {
+//    showAlertDialog(context);
     var response = await http.get(
         Uri.encodeFull("https://jsonplaceholder.typicode.com/posts"),
         headers: {"Accept": "application/json"});
 
     this.setState(() {
+//      Navigator.of(context).pop();
       data = json.decode(response.body);
     });
 
@@ -57,9 +55,11 @@ class HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => DetailScreen()));
+//                Scaffold.of(context)
+//                    .showSnackBar(SnackBar(content: Text(index.toString())));
               },
               child: Container(
-                height: 150,
+                height: 140,
                 child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6),
@@ -82,42 +82,45 @@ class HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                child: Text(
-                                  data[index]["title"],
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10.0),
-                                ),
-                                padding: EdgeInsets.only(left: 5.0),
-                                margin: EdgeInsets.only(top: 10.0),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 7.0),
-                                padding: EdgeInsets.all(5),
-                                decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5)),
-                                  color: Color(0xff9E9E9E),
-                                ),
-                                child: Text(
-                                  'Dubai',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
+                          child: Container(
+                            margin: EdgeInsets.only(top: 10.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(left: 7.0),
+                                  child: Text(
+                                    'Title: ' + data[index]["title"],
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 10.0),
                                   ),
                                 ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 7.0, top: 40.0),
-                                child: Text(
-                                  '50 % discount',
-                                  style: TextStyle(color: Color(0xff8FB88F)),
+                                Container(
+                                  margin: EdgeInsets.only(left: 7.0),
+                                  padding: EdgeInsets.all(5),
+//                                decoration: BoxDecoration(
+//                                  borderRadius:
+//                                      BorderRadius.all(Radius.circular(5)),
+//                                  color: Color(0xff9E9E9E),
+//                                ),
+                                  child: Text(
+                                    'Description: ' + data[index]["title"],
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15.0,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ],
+//                              Container(
+//                                margin: EdgeInsets.only(left: 7.0, top: 40.0),
+//                                child: Text(
+//                                  '50 % discount',
+//                                  style: TextStyle(color: Color(0xff8FB88F)),
+//                                ),
+//                              ),
+                              ],
+                            ),
                           ),
                         ),
                         Container(
@@ -152,6 +155,25 @@ class HomeScreenState extends State<HomeScreen> {
               ),
             );
           }),
+    );
+  }
+
+  showAlertDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      content: new Row(
+        children: [
+          CircularProgressIndicator(),
+          Container(margin: EdgeInsets.only(left: 5), child: Text("Loading")),
+        ],
+      ),
+    );
+    showDialog(
+      useRootNavigator: true,
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }
